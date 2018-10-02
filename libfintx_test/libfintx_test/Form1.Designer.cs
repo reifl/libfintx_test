@@ -189,7 +189,7 @@
             this.pBox_tan.Location = new System.Drawing.Point(1228, 7);
             this.pBox_tan.Margin = new System.Windows.Forms.Padding(4);
             this.pBox_tan.Name = "pBox_tan";
-            this.pBox_tan.Size = new System.Drawing.Size(345, 185);
+            this.pBox_tan.Size = new System.Drawing.Size(345, 214);
             this.pBox_tan.TabIndex = 73;
             this.pBox_tan.TabStop = false;
             // 
@@ -542,7 +542,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2015, 743);
+            this.ClientSize = new System.Drawing.Size(1924, 743);
             this.Controls.Add(this.btn_tan_medium_name_abfragen);
             this.Controls.Add(this.btn_konten_anzeigen);
             this.Controls.Add(this.txt_tan);
