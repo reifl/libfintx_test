@@ -456,6 +456,10 @@ namespace libfintx_test
             {
                 // TAN-Verfahren
                 Segment.HIRMS = txt_tanverfahren.Text;
+				
+				// TAN-Medium-Name
+                var tanmediumname = Main.RequestTANMediumName(connectionDetails);
+                Segment.HITAB = tanmediumname.Data;
 
                 // Out image is needed e. g. for photoTAN
                 var transfer = Main.Transfer(connectionDetails, txt_empfängername.Text, txt_empfängeriban.Text, txt_empfängerbic.Text,
