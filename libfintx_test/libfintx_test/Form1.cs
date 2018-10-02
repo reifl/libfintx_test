@@ -207,6 +207,11 @@ namespace libfintx_test
             }
         }
 
+        /// <summary>
+        /// Konten anzeigen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_konten_anzeigen_Click(object sender, EventArgs e)
         {
             Segment.Reset();
@@ -372,7 +377,7 @@ namespace libfintx_test
         }
 
         /// <summary>
-        /// Umsätze im Format camt052 abholen
+        /// Umsätze im Format camt053 abholen
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -458,7 +463,8 @@ namespace libfintx_test
 
                 HBCIOutput(transfer.Messages);
 
-                SimpleOutput(Main.Transaction_Output());
+                if (transfer.IsSuccess)
+                    SimpleOutput(Main.Transaction_Output());
             }
         }
 
