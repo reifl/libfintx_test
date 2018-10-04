@@ -174,7 +174,7 @@ namespace libfintx
                 }
 
                 string msg_ = string.Join("", msg.ToArray());
-            
+
                 string bpd = "HIBPA" + Parse_String(msg_, "HIBPA", "\r\n" + "HIUPA");
                 string upd = "HIUPA" + Parse_String(msg_, "HIUPA", "\r\n" + "HNHBS");
 
@@ -231,7 +231,7 @@ namespace libfintx
                                         if (String.IsNullOrEmpty(TANf))
                                             TANf = i.ToString();
                                         else
-                                            TANf += $";{i}";                                        
+                                            TANf += $";{i}";
                                     }
                                 }
                             }
@@ -249,7 +249,7 @@ namespace libfintx
                             // Parsing TAN processes
                             if (!String.IsNullOrEmpty(Segment.HIRMS))
                                 Parse_TANProcesses(bpd);
-                            
+
                         }
                     }
 
@@ -332,16 +332,8 @@ namespace libfintx
                 }
 
                 // Fallback if HKKAZ is not delivered by BPD (eg. Postbank)
-                if (bpd.ToLower().Contains("ing-diba")) //-> ing needs segment 5
-                {
-                    if (String.IsNullOrEmpty(Segment.HKKAZ))
-                        Segment.HKKAZ = "5";
-                }
-                else
-                {
-                    if (String.IsNullOrEmpty(Segment.HKKAZ)) // -> this should handle all other banks
-                        Segment.HKKAZ = "6";
-                }
+                if (String.IsNullOrEmpty(Segment.HKKAZ))
+                    Segment.HKKAZ = "5";
 
                 return result;
             }
@@ -493,6 +485,7 @@ namespace libfintx
                     string Accounttype = null;
                     string Accountcurrency = null;
                     string Accountowner = null;
+                    List<AccountPermissions> Accountpermissions = new List<AccountPermissions>();
 
                     // HIUPD:165:6:4+3300785692::280:10050000+DE22100500003300785692+5985932562+10+EUR+Behrendt+Thomas+Sparkassenbuch Gold
                     var match = Regex.Match(result[ctr].Value, @"HIUPD.*?\+(.*?)\+(.*?)\+(.*?)\+(.*?)\+(.*?)\+(.*?)\+(.*?)\+(.*?)\+");
@@ -512,16 +505,64 @@ namespace libfintx
                         Accountcurrency = match.Groups[5].Value;
                         Accountowner = $"{match.Groups[6]} {match.Groups[7]}";
                         Accounttype = match.Groups[8].Value;
+
+                        if (Accountiban?.Length > 2)
+                        {
+                            // Account permissions
+                            string pat = "\\+.*?:1";
+                            MatchCollection res = Regex.Matches(result[ctr].Value, pat, RegexOptions.Singleline);
+
+                            for (int c = 0; c <= res.Count - 1; c++)
+                            {
+                                if (res[c].Value.Length < 10)
+                                {
+                                    Accountpermissions.Add(new AccountPermissions
+                                    {
+                                        Segment = res[c].Value.Replace("+", "").Replace(":1", ""),
+                                        Description = AccountPermissions.Permission(res[c].Value.Replace("+", "").Replace(":1", ""))
+                                    });
+                                }
+                            }
+                        }
                     }
                     else // Fallback
                     {
                         Accountiban = "DE" + Parse_String(result[ctr].Value, "+DE", "+");
                         Accountowner = Parse_String(result[ctr].Value, "EUR+", "+");
                         Accounttype = Parse_String(result[ctr].Value.Replace("++EUR+", ""), "++", "++");
+
+                        if (Accountiban?.Length > 2)
+                        {
+                            // Account permissions
+                            string pat = "\\+.*?:1";
+                            MatchCollection res = Regex.Matches(result[ctr].Value, pat, RegexOptions.Singleline);
+
+                            for (int c = 0; c <= res.Count - 1; c++)
+                            {
+                                if (res[c].Value.Length < 10)
+                                {
+                                    Accountpermissions.Add(new AccountPermissions
+                                    {
+                                        Segment = res[c].Value.Replace("+", "").Replace(":1", ""),
+                                        Description = AccountPermissions.Permission(res[c].Value.Replace("+", "").Replace(":1", ""))
+                                    });
+                                }
+                            }
+                        }
                     }
 
                     if (Accountnumber?.Length > 2 || Accountiban?.Length > 2)
-                        Items.Add(new AccountInformations() { Accountnumber = Accountnumber, Accountbankcode = Accountbankcode, Accountiban = Accountiban, Accountuserid = Accountuserid, Accounttype = Accounttype, Accountcurrency = Accountcurrency, Accountowner = Accountowner});
+                        Items.Add(new AccountInformations()
+                        {
+                            Accountnumber = Accountnumber,
+                            Accountbankcode = Accountbankcode,
+                            Accountiban = Accountiban,
+                            Accountuserid = Accountuserid,
+                            Accounttype = Accounttype,
+                            Accountcurrency = Accountcurrency,
+                            Accountowner = Accountowner,
+                            Accountpermissions = Accountpermissions
+                        });
                 }
 
                 if (Items.Count > 0)
@@ -549,7 +590,7 @@ namespace libfintx
                 string[] processes = Segment.HIRMSf.Split(';');
 
                 // Examples from bpd
-                
+
                 // 944:2:SECUREGO:
                 // 920:2:smsTAN:
                 // 920:2:BestSign:
@@ -589,7 +630,7 @@ namespace libfintx
             // HITAB:4:4:3+0+M:1:::::::::::mT?:MFN1:********0340'
             // HITAB:5:4:3+0+M:2:::::::::::Unregistriert 1::01514/654321::::::+M:1:::::::::::Handy:*********4321:::::::
             var match = Regex.Match(BankCode, @"\+M:1:+(\w.+)?(:[\**\d]+)");
-            if (match.Success) 
+            if (match.Success)
             {
                 return match.Groups[1].Value;
             }
@@ -963,7 +1004,7 @@ namespace libfintx
         /// <summary>
         /// Make filename valid
         /// </summary>
-        public static string MakeFilenameValid (string value)
+        public static string MakeFilenameValid(string value)
         {
             return value.Replace(" ", "_").Replace(":", "");
         }

@@ -242,7 +242,12 @@ namespace libfintx_test
                 {
                     foreach (var acc in accounts.Data)
                     {
-                        SimpleOutput("Inhaber: " + acc.Accountowner + " | " + "IBAN: " + acc.Accountiban + " | "+ "Typ: " + acc.Accounttype);
+                        SimpleOutput("Inhaber: " + acc.Accountowner + " | " + "IBAN: " + acc.Accountiban + " | " + "Typ: " + acc.Accounttype);
+
+                        foreach (var p in acc.Accountpermissions)
+                        {
+                            SimpleOutput("Segment: " + p.Segment + " | " + "Beschreibung: " + p.Description);
+                        }
                     }
                 }
             }
@@ -313,15 +318,15 @@ namespace libfintx_test
 
                 HBCIOutput(transactions.Messages);
 
-                if(transactions.IsSuccess)
+                if (transactions.IsSuccess)
                 {
                     foreach (var item in transactions.Data)
                     {
                         foreach (var i in item.SWIFTTransactions)
                         {
-                            SimpleOutput("Datum: " + i.inputDate + " | " + 
-                                "Empfänger / Auftraggeber: " + i.partnerName + " | " + 
-                                "Verwendungszweck: " + i.text + " | " 
+                            SimpleOutput("Datum: " + i.inputDate + " | " +
+                                "Empfänger / Auftraggeber: " + i.partnerName + " | " +
+                                "Verwendungszweck: " + i.text + " | "
                                 + "Betrag: " + i.amount);
                         }
                     }
@@ -456,8 +461,8 @@ namespace libfintx_test
             {
                 // TAN-Verfahren
                 Segment.HIRMS = txt_tanverfahren.Text;
-				
-				// TAN-Medium-Name
+
+                // TAN-Medium-Name
                 var tanmediumname = Main.RequestTANMediumName(connectionDetails);
                 Segment.HITAB = tanmediumname.Data;
 
