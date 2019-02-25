@@ -464,7 +464,7 @@ namespace libfintx_test
 
                 // TAN-Medium-Name
                 var tanmediumname = Main.RequestTANMediumName(connectionDetails);
-                Segment.HITAB = tanmediumname.Data;
+                Segment.HITAB = tanmediumname.Data.First();
 
                 // Out image is needed e. g. for photoTAN
                 var transfer = Main.Transfer(connectionDetails, txt_empfängername.Text, txt_empfängeriban.Text, txt_empfängerbic.Text,
@@ -508,7 +508,7 @@ namespace libfintx_test
 
                 var tanmediumname = Main.RequestTANMediumName(connectionDetails);
 
-                SimpleOutput(tanmediumname.Data);
+                SimpleOutput(tanmediumname.Data.First());
             }
         }
 

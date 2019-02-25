@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libfintx_test", "libfintx_test\libfintx_test.csproj", "{8C0B1658-3195-44D3-AB86-48EF6B66DB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libfintx", "libfintx\libfintx\libfintx.csproj", "{7F69841C-B99E-4236-AE26-5B6AD0538AE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libfintx", "..\libfintx\libfintx\libfintx.csproj", "{7F69841C-B99E-4236-AE26-5B6AD0538AE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
